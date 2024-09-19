@@ -1,10 +1,8 @@
 # Event-Log-Hunting
 This repository provides a comprehensive, fast-reference dictionary for Windows Event Logs, specifically curated for threat hunting.
 
-Notable Event Log EventID's for Incident Response, Threat Hunting, Forensics, etc
+---
 
-Reference:
-- [Notable-Event-IDs.md](https://github.com/TonyPhipps/SIEM/blob/master/Notable-Event-IDs.md#application)
 
 - [Security Events](#security-events)
 - [Security Events (Domain Controller Specific)](#security-events-domain-controller-specific)
@@ -575,12 +573,85 @@ Legacy. [Final release was 2016](https://en.wikipedia.org/wiki/Enhanced_Mitigati
 |   403   | Engine stopped               |
 |   800   | Includes partial script code |
 
-
-
-
+## RDP Flow
+### RDP Successful Logon
+```mermaid
+graph LR
+A[1149] -->B[4624]
+    B --> C[21]
+    C --> |Logon| D[22] 
+```
+```mermaid
+graph LR
+A[Network connectiong] -->B[Authentication]
+    B --> C[Session logon success]
+    C --> D[Shell start] 
+```
+### RDP Unsuccessful Logon
+```mermaid
+graph LR
+A[1149] -->B[4625]
+    B --> C(X)
+```
+```mermaid
+graph LR
+A[Network connection] -->B[Authentication]
+    B --> C[Session logon success]
+```
+### RDP Session Disconnect (Window Close)
+```mermaid
+graph LR
+A[24] -->B[40]
+    B --> C[4779]
+    C --> D[4634] 
+```
+```mermaid
+graph LR
+A[.] -->B[Session disconnect]
+    B --> C[.]
+    C --> D[.] 
+```
+### RDP Session Disconnect (Purposeful Disconnect via Start > Disconnect)
+```mermaid
+graph LR
+A[24] -->B[39]
+    B --> C[40]
+    C --> D[4779] 
+    D --> E[4634] 
+```
+```mermaid
+graph LR
+A[.] -->B[.]
+    B --> C[Session disconnect]
+    C --> D[.] 
+    D --> E[4634] 
+```
+### RDP Session Reconnect
+```mermaid
+graph LR
+A[1149] -->B[4624 type 7]
+    B --> C[25]
+    C --> D[40] 
+    D --> E[4778] 
+```
+```mermaid
+graph LR
+A[Network connection] -->B[Authentication]
+    B --> C[.]
+    C --> D[Session reconnect] 
+    D --> E[.] 
+```
+### RDP Session Logoff
+```mermaid
+graph LR
+A[23] -->B[4634]
+    B --> |Logoff| C[4647]
+    C --> D[9009] 
+```
 
 
 Sources
+* [Notable-Event-IDs](https://github.com/TonyPhipps/SIEM/blob/master/Notable-Event-IDs.md#application)
 * [Detecting Lateral Movement through Tracking Event Logs - JPCERT Coordination Center](https://www.jpcert.or.jp/english/pub/sr/20170612ac-ir_research_en.pdf)
 * [Appendix L: Events to Monitor](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/appendix-l--events-to-monitor)
 * [Spotting the Adversary with Windows Event Log Monitoring](https://msdnshared.blob.core.windows.net/media/2017/10/Spotting_the_Adversary_with_Windows_Event_Log_Monitoring.pdf)
